@@ -1,0 +1,8 @@
+#inputSearch {
+    margin-bottom : 5%
+}
+.containerForCards {
+    display: flex;
+    columns: 2;
+    flex-direction: column;
+}

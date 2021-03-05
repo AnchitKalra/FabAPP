@@ -1,0 +1,17 @@
+.cardContainer1 {
+    margin-top: 3%;
+}
+#card {
+    
+    margin-left: 40%;
+    width: 30%;
+    height: 40%;
+}
+#login {
+    font-size: larger;
+    font-weight: bolder;
+
+}
+h5 {
+    color: red;
+}
