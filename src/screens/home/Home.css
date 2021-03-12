@@ -1,8 +1,11 @@
 #inputSearch {
     margin-bottom : 5%
 }
-.containerForCards {
-    display: flex;
-    columns: 2;
-    flex-direction: column;
+#cardmedia {
+    height : 400px;
+    width: 400px
+}
+#containerForCards {
+    display: grid;
+    grid-template-columns: auto auto;
 }
