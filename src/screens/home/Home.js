@@ -30,6 +30,9 @@ let media2;
 let imageCount;
 let cardReturn = [];
 let countReturn = 0;
+let caption = [];
+let indexCaption = 0;
+let captionText = [[]];
 class Home extends Component {
     constructor() {
         super()
@@ -55,7 +58,7 @@ class Home extends Component {
             }
 
         };
-        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJXLUFCdnpraVlqSHl0aWhjSFBoSGo2YU10NXBuS2hlYUdTbW91aU1iOVNTdjJKcE1wc2ZAzX3l1aW9jTjhWRk9HdGsxYXZA2bjJFUS1Pazdqd040Wi1OZAjRlYjdFNWF4ejd2S3Bwa2ZAGLVVoYUxUbUVmeDZADNndWZAjlB')
+        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJXZAm5qa2NHeUktcHJoSEpfOEhNWEpwVHNxUnFDRWhraXpWSUwxSzYyeGhaT3R5ZAHo4V2E2WU0xYUF2SXBuRzdOOS14THotb0lkdFZA6cTkweklXYVNUakRzcndPUDQwdUVoZAGtlRS14MmJ5YnRPX3UwVHh1NEpiNTl3')
         xhr.send()
 
         //xhr = new XMLHttpRequest()
@@ -73,7 +76,12 @@ class Home extends Component {
 
             xhr[i] = new XMLHttpRequest()
             let a = imgdata.data[i]
-            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJXLUFCdnpraVlqSHl0aWhjSFBoSGo2YU10NXBuS2hlYUdTbW91aU1iOVNTdjJKcE1wc2ZAzX3l1aW9jTjhWRk9HdGsxYXZA2bjJFUS1Pazdqd040Wi1OZAjRlYjdFNWF4ejd2S3Bwa2ZAGLVVoYUxUbUVmeDZADNndWZAjlB')
+            caption[i] = imgdata.data[i].caption;
+            if (caption[i] != undefined) {
+                captionText[i] = caption[i].split('\n');
+                console.log('CAPTIONTEXT', captionText[i])
+            }
+            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJXZAm5qa2NHeUktcHJoSEpfOEhNWEpwVHNxUnFDRWhraXpWSUwxSzYyeGhaT3R5ZAHo4V2E2WU0xYUF2SXBuRzdOOS14THotb0lkdFZA6cTkweklXYVNUakRzcndPUDQwdUVoZAGtlRS14MmJ5YnRPX3UwVHh1NEpiNTl3')
             xhr[i].send()
 
             xhr[i].onreadystatechange = function () {
@@ -151,11 +159,15 @@ class Home extends Component {
                                 cardReturn[countReturn++] = (
                                     <div>
                                         <Card style={{ width: '50%' }}>
-                                            <CardHeader id='cardHead' title={this.state.data.username} subheader={new Date(this.state.data.timestamp).toDateString()}
+                                            <CardHeader id='cardHead' title={this.state.data.username} subheader={new Date(this.state.data.timestamp).toLocaleDateString('en-IN') + " " + new Date(this.state.data.timestamp).getHours() + ":" + new Date(this.state.data.timestamp).getMinutes() + ":" + new Date(this.state.data.timestamp).getSeconds()}
                                             />
                                             <CardContent id="displayCards">
                                                 <CardMedia image={media1} id="cardmedia" />
                                                 {console.log('MEDIA1', media1)}
+                                                <hr />
+                                                <Typography variant="body2">{captionText[indexCaption] != undefined ? captionText[indexCaption][0] : ""}</Typography>
+                                                <Typography variant="body2" id="caption">{captionText[indexCaption] != undefined ? captionText[indexCaption++][1] : ""}</Typography><br />
+
                                             </CardContent>
                                         </Card>
                                     </div>)
