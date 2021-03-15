@@ -12,3 +12,14 @@
 #caption {
     color: blue;
 }
+#iconbutton {
+    height : 400px;
+    width: 400px
+}
+#middleContainer {
+    display:grid;
+    grid-template-columns: auto auto;
+}
+#searchBox {
+    height: fit-content;
+}

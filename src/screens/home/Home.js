@@ -19,7 +19,10 @@ import { FavoriteBorder } from "@material-ui/icons";
 import { Favorite } from '@material-ui/icons';
 //import Likes from "../../assets/Likes";
 import Icon from '@material-ui/core/Icon';
-import obj from '../../assets/Likes'
+import obj from '../../assets/Likes';
+import { IconButton } from '@material-ui/core';
+import profilepic from '../../static/me.jpg';
+import color from "@material-ui/core/colors/amber";
 
 let img;
 let getImageHandler;
@@ -44,7 +47,9 @@ let flag = false;
 let mediaNumber = 0;
 let likeHandler
 let hearts = "FavoriteBorder";
-let likeCount = 20;
+let likeCount = 90;
+let imageId = "";
+
 
 class Home extends Component {
     constructor() {
@@ -73,7 +78,7 @@ class Home extends Component {
             }
 
         };
-        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJYRTQxdXhhSkozSDJoSzAxVjNoTGdIcWVFUFN5YWQ5czNYT1dnQTliQ09nVGVxOHlOeXgwZAml0UmUwNmxlYV9lMXRVanFjRXhDcV9mdG9HeU1VUDNvNUQzaU1TRmFLYVlXNlRQaXlWNEJ0R0taSElvRHR1LUoxZAGVj')
+        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJWUDRaeFM5RV84MzZA5am1EMDF6QXF4VkMyUkZAMNFdtTGR3WEQwLVhvZAkpjbU5SX2I1SjhPcGRRTVBhSl9aSy1FU0hvR3duU1czOWdPVnhsTzdBaVdVQ3lQN1RTTFYtcVhPMFZAxUFRkaC0zQW1IbW5aUTFUd0xLTTFv')
         xhr.send()
 
         //xhr = new XMLHttpRequest()
@@ -94,9 +99,11 @@ class Home extends Component {
             caption[i] = imgdata.data[i].caption;
             if (caption[i] != undefined) {
                 captionText[i] = caption[i].split('\n');
-                console.log('CAPTIONTEXT', captionText[i])
+                captionText[i][2] = imgdata.data[i].id
+
+                console.log('CAPTIONTEXT', i, captionText[i])
             }
-            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJYRTQxdXhhSkozSDJoSzAxVjNoTGdIcWVFUFN5YWQ5czNYT1dnQTliQ09nVGVxOHlOeXgwZAml0UmUwNmxlYV9lMXRVanFjRXhDcV9mdG9HeU1VUDNvNUQzaU1TRmFLYVlXNlRQaXlWNEJ0R0taSElvRHR1LUoxZAGVj')
+            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJWUDRaeFM5RV84MzZA5am1EMDF6QXF4VkMyUkZAMNFdtTGR3WEQwLVhvZAkpjbU5SX2I1SjhPcGRRTVBhSl9aSy1FU0hvR3duU1czOWdPVnhsTzdBaVdVQ3lQN1RTTFYtcVhPMFZAxUFRkaC0zQW1IbW5aUTFUd0xLTTFv')
             xhr[i].send()
 
             xhr[i].onreadystatechange = function () {
@@ -182,13 +189,17 @@ class Home extends Component {
                     <h3>
                         Image Viewer
            </h3>
-                    <div style={{ width: '30%', marginLeft: '60%', marginTop: '0', textAlign: 'center' }}>
-                        <div style={{ backgroundColor: '#c0c0c0', borderRadius: '4px', width: '300px' }}>
+                    <div id='middleContainer' style={{ width: '30%', marginLeft: '60%', marginTop: '0', textAlign: 'center' }}>
+                        <div id='searchBox' style={{ backgroundColor: '#c0c0c0', borderRadius: '4px', width: '300px' }}>
                             <Search style={{ color: 'black', marginTop: '3%' }} />
                             <Input id="inputSearch" type="text" placeholder="Search..."></Input>
-
+                        </div>
+                        <div style={{ marginTop: '0' }}>
+                            <IconButton onClick={this.profileHandler} style={{ marginLeft: '100%', height: '100px', width: '50px', marginTop: 0 }}><img src={profilepic} style={{ height: '50px', width: '50px' }} alt='Not Found' /></IconButton>
                         </div>
                     </div>
+
+
                 </div>
 
                 <div>
@@ -205,6 +216,8 @@ class Home extends Component {
                         cardDisplay = () => {
 
                             media1 = this.state.data.media_url
+                            imageId = this.state.data.id
+                            //console.log('ID ->', imageId)
                             imageCount--;
 
 
@@ -222,8 +235,8 @@ class Home extends Component {
                                                 <CardMedia image={media1} id="cardmedia" />
                                                 {console.log('MEDIA1', media1)}
                                                 <hr />
-                                                <Typography variant="body2">{captionText[indexCaption] != undefined ? captionText[indexCaption][0] : ""}</Typography>
-                                                <Typography variant="body2" id="caption">{captionText[indexCaption] != undefined ? captionText[indexCaption++][1] : ""}</Typography><br />
+                                                <Typography variant="body2">{captionText[indexCaption] != undefined ? captionText[indexCaption][2] == imageId ? captionText[indexCaption][0] : "" : ""}</Typography>
+                                                <Typography variant="body2" id="caption">{captionText[indexCaption] != undefined ? captionText[indexCaption][2] == imageId ? captionText[indexCaption++][1] : "" : ""}</Typography><br />
 
                                                 <span onClick={this.likeHandler.bind(this, mediaNumber, likeCount)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="50px" height="50px"><path d="M0 0h24v24H0z" fill="none" /><path id={mediaNumber} style={{ d: 'path("M 16.5 3 c -1.74 0 -3.41 0.81 -4.5 2.09 C 10.91 3.81 9.24 3 7.5 3 C 4.42 3 2 5.42 2 8.5 c 0 3.78 3.4 6.86 8.55 11.54 L 12 21.35 l 1.45 -1.32 C 18.6 15.36 22 12.28 22 8.5 C 22 5.42 19.58 3 16.5 3 Z m -4.4 15.55 l -0.1 0.1 l -0.1 -0.1 C 7.14 14.24 4 11.39 4 8.5 C 4 6.5 5.5 5 7.5 5 c 1.54 0 3.04 0.99 3.57 2.36 h 1.87 C 13.46 5.99 14.96 5 16.5 5 c 2 0 3.5 1.5 3.5 3.5 c 0 2.89 -3.14 5.74 -7.9 10.05 Z")' }} /></svg></span><span id={likeCount}>{likeCount}  Likes</span>
                                             </CardContent>
