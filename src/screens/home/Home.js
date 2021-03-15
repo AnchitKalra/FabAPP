@@ -15,6 +15,11 @@ import Typography from '@material-ui/core/Typography';
 import { CardActionArea } from "@material-ui/core";
 import ancimg from "../../static/anc.jpg";
 import { BrowserRouter } from "react-router-dom";
+import { FavoriteBorder } from "@material-ui/icons";
+import { Favorite } from '@material-ui/icons';
+//import Likes from "../../assets/Likes";
+import Icon from '@material-ui/core/Icon';
+import obj from '../../assets/Likes'
 
 let img;
 let getImageHandler;
@@ -33,12 +38,22 @@ let countReturn = 0;
 let caption = [];
 let indexCaption = 0;
 let captionText = [[]];
+let randomLikes;
+let isClick = false;
+let flag = false;
+let mediaNumber = 0;
+let likeHandler
+let hearts = "FavoriteBorder";
+let likeCount = 20;
+
 class Home extends Component {
     constructor() {
         super()
         this.state = {
-            data: [{}]
+            data: [{}],
+
         }
+        this.isClick = false;
     }
     componentWillUnmount() {
         this.state = {
@@ -58,7 +73,7 @@ class Home extends Component {
             }
 
         };
-        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJXZAm5qa2NHeUktcHJoSEpfOEhNWEpwVHNxUnFDRWhraXpWSUwxSzYyeGhaT3R5ZAHo4V2E2WU0xYUF2SXBuRzdOOS14THotb0lkdFZA6cTkweklXYVNUakRzcndPUDQwdUVoZAGtlRS14MmJ5YnRPX3UwVHh1NEpiNTl3')
+        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJYRTQxdXhhSkozSDJoSzAxVjNoTGdIcWVFUFN5YWQ5czNYT1dnQTliQ09nVGVxOHlOeXgwZAml0UmUwNmxlYV9lMXRVanFjRXhDcV9mdG9HeU1VUDNvNUQzaU1TRmFLYVlXNlRQaXlWNEJ0R0taSElvRHR1LUoxZAGVj')
         xhr.send()
 
         //xhr = new XMLHttpRequest()
@@ -81,7 +96,7 @@ class Home extends Component {
                 captionText[i] = caption[i].split('\n');
                 console.log('CAPTIONTEXT', captionText[i])
             }
-            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJXZAm5qa2NHeUktcHJoSEpfOEhNWEpwVHNxUnFDRWhraXpWSUwxSzYyeGhaT3R5ZAHo4V2E2WU0xYUF2SXBuRzdOOS14THotb0lkdFZA6cTkweklXYVNUakRzcndPUDQwdUVoZAGtlRS14MmJ5YnRPX3UwVHh1NEpiNTl3')
+            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJYRTQxdXhhSkozSDJoSzAxVjNoTGdIcWVFUFN5YWQ5czNYT1dnQTliQ09nVGVxOHlOeXgwZAml0UmUwNmxlYV9lMXRVanFjRXhDcV9mdG9HeU1VUDNvNUQzaU1TRmFLYVlXNlRQaXlWNEJ0R0taSElvRHR1LUoxZAGVj')
             xhr[i].send()
 
             xhr[i].onreadystatechange = function () {
@@ -107,7 +122,44 @@ class Home extends Component {
 
     componentDidUpdate() {
         console.log('DIDUPDATE')
+        flag = true;
         cardDisplay()
+    }
+    componentDidMount() {
+        flag = false
+    }
+
+
+
+    likeHandler = (e, likeCount) => {
+
+
+        //isClick = !isClick
+        var a = document.getElementById(e)
+        var b = document.getElementsByTagName('svg')[e + 1]
+        console.log('HI there from like handler', e, a.getAttribute('style'))
+        var c = a.getAttribute('style').split('"')
+        var i = 0
+        if (c[1].charAt(i) === 'M' && c[1].charAt(i + 1) === ' ') {
+
+            document.getElementsByTagName('svg')[e + 1].setAttribute('style', 'fill : red')
+            a.setAttribute('style', 'd : path("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"); color : red')
+            document.getElementById(likeCount).innerHTML = "" + (++likeCount) + " Likes"
+
+            //this.updateLikeCount(count)
+            // a.setAttribute('style', 'color : red')
+
+        }
+        else {
+            //this.setState({ hearts: <FavoriteBorder /> })
+            a.setAttribute('style', 'd: path("M 16.5 3 c -1.74 0 -3.41 0.81 -4.5 2.09 C 10.91 3.81 9.24 3 7.5 3 C 4.42 3 2 5.42 2 8.5 c 0 3.78 3.4 6.86 8.55 11.54 L 12 21.35 l 1.45 -1.32 C 18.6 15.36 22 12.28 22 8.5 C 22 5.42 19.58 3 16.5 3 Z m -4.4 15.55 l -0.1 0.1 l -0.1 -0.1 C 7.14 14.24 4 11.39 4 8.5 C 4 6.5 5.5 5 7.5 5 c 1.54 0 3.04 0.99 3.57 2.36 h 1.87 C 13.46 5.99 14.96 5 16.5 5 c 2 0 3.5 1.5 3.5 3.5 c 0 2.89 -3.14 5.74 -7.9 10.05 Z"); color : black')
+            document.getElementsByTagName('svg')[e + 1].setAttribute('style', 'fill : black')
+            document.getElementById(likeCount).innerHTML = "" + (likeCount) + " Likes"
+            //this.updateLikeCount(likeCount)
+
+        }
+
+
     }
 
 
@@ -120,6 +172,8 @@ class Home extends Component {
 
     render() {
         { let a = getImageHandler }
+
+
         return (
 
             <div>
@@ -156,6 +210,9 @@ class Home extends Component {
 
                             if (media1 != undefined) {
 
+
+
+
                                 cardReturn[countReturn++] = (
                                     <div>
                                         <Card style={{ width: '50%' }}>
@@ -168,14 +225,16 @@ class Home extends Component {
                                                 <Typography variant="body2">{captionText[indexCaption] != undefined ? captionText[indexCaption][0] : ""}</Typography>
                                                 <Typography variant="body2" id="caption">{captionText[indexCaption] != undefined ? captionText[indexCaption++][1] : ""}</Typography><br />
 
+                                                <span onClick={this.likeHandler.bind(this, mediaNumber, likeCount)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="50px" height="50px"><path d="M0 0h24v24H0z" fill="none" /><path id={mediaNumber} style={{ d: 'path("M 16.5 3 c -1.74 0 -3.41 0.81 -4.5 2.09 C 10.91 3.81 9.24 3 7.5 3 C 4.42 3 2 5.42 2 8.5 c 0 3.78 3.4 6.86 8.55 11.54 L 12 21.35 l 1.45 -1.32 C 18.6 15.36 22 12.28 22 8.5 C 22 5.42 19.58 3 16.5 3 Z m -4.4 15.55 l -0.1 0.1 l -0.1 -0.1 C 7.14 14.24 4 11.39 4 8.5 C 4 6.5 5.5 5 7.5 5 c 1.54 0 3.04 0.99 3.57 2.36 h 1.87 C 13.46 5.99 14.96 5 16.5 5 c 2 0 3.5 1.5 3.5 3.5 c 0 2.89 -3.14 5.74 -7.9 10.05 Z")' }} /></svg></span><span id={likeCount}>{likeCount}  Likes</span>
                                             </CardContent>
+
                                         </Card>
                                     </div>)
 
 
 
-
-
+                                { mediaNumber++ }
+                                { likeCount++ }
 
 
                             }
