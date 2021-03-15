@@ -49,6 +49,7 @@ let likeHandler
 let hearts = "FavoriteBorder";
 let likeCount = 90;
 let imageId = "";
+let captionTIndex;
 
 
 class Home extends Component {
@@ -78,7 +79,7 @@ class Home extends Component {
             }
 
         };
-        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJWUDRaeFM5RV84MzZA5am1EMDF6QXF4VkMyUkZAMNFdtTGR3WEQwLVhvZAkpjbU5SX2I1SjhPcGRRTVBhSl9aSy1FU0hvR3duU1czOWdPVnhsTzdBaVdVQ3lQN1RTTFYtcVhPMFZAxUFRkaC0zQW1IbW5aUTFUd0xLTTFv')
+        xhr.open('GET', 'https://graph.instagram.com/me/media?fields=id,caption&access_token=IGQVJXSjRlcmdJQkdZAc25Sal9tWkpQeG1sWm8tQ08tSjhEdWdpdmxPX1JDQ2pPUTVraWNaVlNvQnh5UF9sdklvQXJMR3RlNXowOUloRHFGd2tmV3dTRTgzSFBHUWFudi0zdG1YWTdCcEJvcVVWUUxucUZAjbEoyalRkY0hJ')
         xhr.send()
 
         //xhr = new XMLHttpRequest()
@@ -103,7 +104,7 @@ class Home extends Component {
 
                 console.log('CAPTIONTEXT', i, captionText[i])
             }
-            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJWUDRaeFM5RV84MzZA5am1EMDF6QXF4VkMyUkZAMNFdtTGR3WEQwLVhvZAkpjbU5SX2I1SjhPcGRRTVBhSl9aSy1FU0hvR3duU1czOWdPVnhsTzdBaVdVQ3lQN1RTTFYtcVhPMFZAxUFRkaC0zQW1IbW5aUTFUd0xLTTFv')
+            xhr[i].open('GET', 'https://graph.instagram.com/' + a.id + '?fields=id,media_type,media_url,username,timestamp&access_token=IGQVJXSjRlcmdJQkdZAc25Sal9tWkpQeG1sWm8tQ08tSjhEdWdpdmxPX1JDQ2pPUTVraWNaVlNvQnh5UF9sdklvQXJMR3RlNXowOUloRHFGd2tmV3dTRTgzSFBHUWFudi0zdG1YWTdCcEJvcVVWUUxucUZAjbEoyalRkY0hJ')
             xhr[i].send()
 
             xhr[i].onreadystatechange = function () {
@@ -222,6 +223,23 @@ class Home extends Component {
 
 
                             if (media1 != undefined) {
+                                {
+                                    captionTIndex = captionText != undefined ? captionText.map(
+                                        a => {
+                                            let b = a[2] == imageId ? a : ""
+                                            console.log('From Map', b[0])
+                                            if (b != undefined || b != "") {
+                                                return b
+                                            }
+                                        }) : ""
+
+                                    for (let i = 0; i < captionTIndex.length; i++) {
+                                        if (captionTIndex[i] != "") {
+                                            captionTIndex[0] = captionTIndex[i]
+                                        }
+                                    }
+
+                                }
 
 
 
@@ -235,8 +253,13 @@ class Home extends Component {
                                                 <CardMedia image={media1} id="cardmedia" />
                                                 {console.log('MEDIA1', media1)}
                                                 <hr />
-                                                <Typography variant="body2">{captionText[indexCaption] != undefined ? captionText[indexCaption][2] == imageId ? captionText[indexCaption][0] : "" : ""}</Typography>
-                                                <Typography variant="body2" id="caption">{captionText[indexCaption] != undefined ? captionText[indexCaption][2] == imageId ? captionText[indexCaption++][1] : "" : ""}</Typography><br />
+                                                {console.log(captionTIndex)}
+
+
+
+                                                <Typography variant="body2">{captionTIndex != "" ? captionTIndex[0][0] : ""}</Typography><br />
+                                                <Typography variant="body2" id="caption">{captionTIndex != "" ? captionTIndex[0][1] : ""}</Typography><br />
+
 
                                                 <span onClick={this.likeHandler.bind(this, mediaNumber, likeCount)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="50px" height="50px"><path d="M0 0h24v24H0z" fill="none" /><path id={mediaNumber} style={{ d: 'path("M 16.5 3 c -1.74 0 -3.41 0.81 -4.5 2.09 C 10.91 3.81 9.24 3 7.5 3 C 4.42 3 2 5.42 2 8.5 c 0 3.78 3.4 6.86 8.55 11.54 L 12 21.35 l 1.45 -1.32 C 18.6 15.36 22 12.28 22 8.5 C 22 5.42 19.58 3 16.5 3 Z m -4.4 15.55 l -0.1 0.1 l -0.1 -0.1 C 7.14 14.24 4 11.39 4 8.5 C 4 6.5 5.5 5 7.5 5 c 1.54 0 3.04 0.99 3.57 2.36 h 1.87 C 13.46 5.99 14.96 5 16.5 5 c 2 0 3.5 1.5 3.5 3.5 c 0 2.89 -3.14 5.74 -7.9 10.05 Z")' }} /></svg></span><span id={likeCount}>{likeCount}  Likes</span>
                                             </CardContent>
@@ -248,6 +271,7 @@ class Home extends Component {
 
                                 { mediaNumber++ }
                                 { likeCount++ }
+                                { captionTIndex = "" }
 
 
                             }
